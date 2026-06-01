@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="../src/renderer/styles.css" />
+  <style>body { background: #e8e8ed; padding: 20px; overflow: auto; }</style>
+</head>
+<body>
+  <div class="frame">
+    <div id="card" class="card"></div>
+  </div>
+  <canvas id="tray-canvas" width="32" height="32" aria-hidden="true"></canvas>
+  <div id="context-menu" class="context-menu" hidden></div>
+  <script>
+    window.devTray = {
+      init: () => Promise.resolve({
+        appName: 'Dev Tray', version: '0.1.0',
+        settings: { refreshInterval: 5, hasCompletedOnboarding: true },
+        launchAtLogin: false,
+      }),
+      onPortsUpdate: (cb) => { window.__portsCb = cb; return () => {}; },
+      onWillShow: (cb) => { cb(); return () => {}; },
+      setRefreshInterval: async (s) => s,
+      setLaunchAtLogin: async (v) => v,
+      completeOnboarding: async () => {},
+      refresh: () => {},
+      killPort: () => {},
+      killAll: () => {},
+      openPort: () => {},
+      copy: () => {},
+      quit: () => {},
+      hideWindow: () => {},
+      resizeWindow: () => {},
+      updateTray: () => {},
+    };
+  </script>
+  <script src="../src/renderer/renderer.js"></script>
+  <script>
+    window.__booted = window.devTray.init().then(() => {
+      window.__portsCb({
+        entries: [
+          { id: '5173-101', port: 5173, pid: 101, projectName: 'demo-api', branch: 'main', startTime: new Date().toISOString() },
+          { id: '3001-102', port: 3001, pid: 102, projectName: 'demo-api', branch: 'feat/auth', startTime: new Date().toISOString() },
+          { id: '3000-103', port: 3000, pid: 103, projectName: 'api-gateway', branch: 'main', startTime: new Date().toISOString() },
+        ],
+        isScanning: false,
+        error: null,
+      });
+    });
+  </script>
+</body>
+</html>

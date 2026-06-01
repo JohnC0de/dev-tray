@@ -1,0 +1,20 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+out/
+
+# logs
+*.log
+npm-debug.log*
+
+# local throwaway / verification artifacts
+.cursor/
+.ui-*.png
+.elog-*.txt
+.npmstart-*.txt
+.smoke*
+scripts/*.png
+prototype/ui/*.png
+bun.lock
