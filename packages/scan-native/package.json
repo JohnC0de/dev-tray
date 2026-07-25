@@ -1,0 +1,33 @@
+{
+  "name": "@dev-tray/scan-native",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "*.node"
+  ],
+  "napi": {
+    "name": "scan-native",
+    "triples": {
+      "defaults": false,
+      "additional": ["x86_64-pc-windows-msvc"]
+    }
+  },
+  "scripts": {
+    "build": "napi build --platform --release",
+    "build:debug": "napi build --platform",
+    "test": "vitest run",
+    "test:rust": "cargo test",
+    "postinstall": "napi build --platform --release || node -e \"console.warn('@dev-tray/scan-native: native build skipped (install Rust MSVC to build)')\""
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.4",
+    "@types/node": "^22.15.30",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4",
+    "zod": "^3.25.67"
+  }
+}
