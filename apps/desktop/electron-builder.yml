@@ -1,0 +1,27 @@
+appId: app.dev-tray
+productName: Dev Tray
+electronVersion: 42.3.0
+directories:
+  output: ../../dist
+  buildResources: ../../assets
+files:
+  - out/**/*
+  - ../../assets/**/*
+asarUnpack:
+  - ../../assets/**
+extraResources:
+  - from: ../../scan-worker.ps1
+    to: scan-worker.ps1
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: ../../assets/icon.png
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Dev Tray
