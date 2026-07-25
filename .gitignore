@@ -4,6 +4,8 @@ node_modules/
 # build output
 dist/
 out/
+packages/scan-native/target/
+packages/scan-native/*.node
 
 # logs
 *.log

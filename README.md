@@ -83,6 +83,19 @@ npm install
 npm start
 ```
 
+### Native scanner (optional, Phase 6)
+
+The Rust addon in `packages/scan-native` is not required for day-to-day dev yet (PowerShell worker
+is still the default). To build it:
+
+```powershell
+# Rust stable + Visual Studio Build Tools (Desktop development with C++)
+npm run build:native
+```
+
+Produces `packages/scan-native/scan-native.win32-x64-msvc.node`. Run `npm run test:native` for shape
+tests and a live scan smoke check when the `.node` file is present.
+
 The app launches into the system tray with no taskbar window. Click the tray icon to open the popover.
 
 ## Build a Windows installer
