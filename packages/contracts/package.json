@@ -1,0 +1,24 @@
+{
+  "name": "@dev-tray/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/ipc.js",
+  "types": "./dist/ipc.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/ipc.d.ts",
+      "import": "./dist/ipc.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@dev-tray/core": "*",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

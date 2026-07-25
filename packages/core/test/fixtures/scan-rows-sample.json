@@ -1,0 +1,29 @@
+[
+  {
+    "port": 5173,
+    "pid": 12345,
+    "name": "node.exe",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "cmd": "node C:\\Users\\dev\\my-app\\node_modules\\vite\\bin\\vite.js",
+    "cwd": "C:\\Users\\dev\\my-app",
+    "start": "2026-06-01T10:00:00.000Z"
+  },
+  {
+    "port": 3000,
+    "pid": 23456,
+    "name": "node.exe",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "cmd": "node C:\\Users\\dev\\api\\node_modules\\next\\dist\\bin\\next dev",
+    "cwd": "C:\\Users\\dev\\api",
+    "start": "2026-06-01T09:30:00.000Z"
+  },
+  {
+    "port": 8080,
+    "pid": 34567,
+    "name": "python.exe",
+    "path": "C:\\Python312\\python.exe",
+    "cmd": "python -m uvicorn main:app --reload --port 8080",
+    "cwd": "C:\\Users\\dev\\backend",
+    "start": null
+  }
+]
