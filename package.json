@@ -16,6 +16,7 @@
     "pack": "npm --prefix apps/desktop run pack",
     "build:native": "npm --prefix packages/scan-native run build",
     "test": "npm --prefix packages/core run test && npm --prefix apps/desktop run test",
+    "check": "npm test",
     "test:native": "npm --prefix packages/scan-native run test",
     "scan:once": "npm --prefix apps/desktop run scan:once",
     "start": "npm run dev",
