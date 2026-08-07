@@ -1,0 +1,25 @@
+{
+  "name": "@dev-tray/linux",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "dev-tray-linux": "dist/dev-tray-linux"
+  },
+  "scripts": {
+    "build": "esbuild src/cli.ts --bundle --platform=node --format=esm --target=node22 --outfile=dist/dev-tray-linux --banner:js=\"#!/usr/bin/env node\" && chmod +x dist/dev-tray-linux",
+    "dev": "tsx src/cli.ts",
+    "install:local": "./install-local.sh",
+    "test": "vitest run && tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@dev-tray/core": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.19.4",
+    "typescript": "^7.0.2",
+    "vitest": "^3.2.4"
+  }
+}

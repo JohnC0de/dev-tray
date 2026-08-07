@@ -1,0 +1,7 @@
+"custom/dev-tray": {
+  "return-type": "json",
+  "exec": "dev-tray-linux waybar",
+  "interval": 5,
+  "on-click": "qs -c dev-tray ipc call devTray toggle",
+  "tooltip": true
+}

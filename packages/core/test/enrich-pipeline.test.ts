@@ -6,6 +6,7 @@ import { ScanRowSchema } from '../src/schemas/scan-row.js';
 import { enrichScanRows, createEnrichCaches } from '../src/enrich/pipeline.js';
 import { computeGroupKey } from '../src/enrich/group-key.js';
 import { detectFramework } from '../src/enrich/framework.js';
+import { extractPaths } from '../src/enrich/candidate-dirs.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const fixturePath = path.join(__dirname, 'fixtures/scan-rows-sample.json');
@@ -63,5 +64,15 @@ describe('enrich pipeline', () => {
     expect(detectFramework('node vite.js')).toBe('vite');
     expect(detectFramework('next dev')).toBe('next');
     expect(detectFramework('unknown server')).toBeNull();
+  });
+
+  it('extracts absolute POSIX command-line paths', () => {
+    expect(extractPaths(
+      'node /home/dev/app/server.js --config=/home/dev/app/config.js "/home/dev/my app/server.js"',
+    )).toEqual([
+      '/home/dev/app/server.js',
+      '/home/dev/app/config.js',
+      '/home/dev/my app/server.js',
+    ]);
   });
 });

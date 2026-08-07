@@ -1,6 +1,6 @@
 # Architecture
 
-How Dev Tray discovers, identifies, and acts on local dev servers on Windows.
+How Dev Tray discovers, identifies, and acts on local dev servers across Windows and Linux.
 
 For the product contract (pillars, Entry model, acceptance criteria) see
 [PRODUCT.md](PRODUCT.md). For the reasoning behind specific semantics see the
@@ -30,13 +30,22 @@ To avoid paying PowerShell's cold-start (~700 ms) on every poll, a single
 the worker lifecycle (stdin `SCAN`/`QUIT`), then enriches each row with Git
 metadata and filters out non-dev processes.
 
+### Linux shell adapter
+
+`apps/linux` is a separate shell frontend, not a second Electron app. Its CLI reads user-owned
+listeners from `ss`, enriches them with `/proc`, and passes the resulting `ScanRow` values through
+`@dev-tray/core`. Waybar consumes the count-only JSON view; Quickshell consumes the full `Entry[]`
+payload and owns open/kill interactions.
+
+The CLI rejects kill requests for PIDs absent from the latest scan, sends `SIGTERM` to the process
+tree, then uses `SIGKILL` only for survivors.
+
 ## Project detection
 
 Detection prefers, in order:
 
-1. The process's **real working directory** (read from its PEB). Works for
-   64-bit, same-user, non-elevated processes — i.e. the dev servers you actually
-   run.
+1. The process's **real working directory** (read from its PEB on Windows or `/proc/<pid>/cwd` on
+   Linux). Same-user processes are the normal supported case.
 2. Absolute paths found in the **command line** (covers npm/pnpm/yarn-launched
    servers, where the bin script path is absolute).
 3. The executable's directory (only for compiled binaries that live inside a
@@ -53,24 +62,19 @@ so installed desktop apps don't clutter the list.
 - Working-directory read fails (and detection falls back to command-line
   parsing) for **elevated** or **32-bit** processes, and for those owned by
   another user.
-- Windows-only: discovery relies on `Get-NetTCPConnection`, the Windows PEB
-  layout, and `taskkill`.
+- Linux only sees process details exposed to the current user through `ss` and `/proc`.
+- The Linux preview is installed from source; there is no packaged distro artifact yet.
 
 ## Source layout
 
 ```
-docs/PRODUCT.md          product spec (pillars, Entry model, acceptance criteria)
-docs/adr/                architecture decision records for pillar semantics
-docs/ARCHITECTURE.md     this document
-package.json             Electron app + electron-builder config
-scan-worker.ps1          resident PowerShell scan worker (ports + process info + PEB cwd)
-src/main/main.js         tray, popover window, polling, IPC, lifecycle
-src/main/scanner.js      PowerShell-worker mgmt + project/branch resolution + filtering
-src/main/store.js        settings persisted to userData
-src/preload/preload.js   contextBridge IPC surface (contextIsolation on, no node in renderer)
-src/renderer/            HTML/CSS/JS popover UI (port list, onboarding, settings, tray icon)
-src/shared/brand.js      app name, IDs, and shared copy
-scripts/gen-icons.js     regenerates assets/*.png (pure Node PNG encoder)
-scripts/test-server.js   tiny http listener for testing detection
-assets/                  app + tray icons + screenshot
+apps/desktop/           Electron tray app and Windows composition
+apps/linux/             Linux CLI, Waybar module, and Quickshell popover
+packages/core/          cross-platform schemas, enrichment, sessions, and probes
+packages/contracts/     shared IPC contracts
+packages/scan-native/   optional napi-rs scanner
+scan-worker.ps1         resident Windows scanner
+docs/                   product spec, architecture, and ADRs
+scripts/test-server.js  tiny HTTP listener for smoke testing
+assets/                 app, tray icons, and screenshots
 ```

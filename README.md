@@ -1,8 +1,8 @@
 # Dev Tray
 
-**localhost, organized.** A tiny Windows tray app that tracks your dev servers across projects.
+**localhost, organized.** A tiny tray app that tracks your dev servers across projects.
 
-[![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-0078D6?logo=windows)](#requirements)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20preview-0078D6?logo=linux)](#requirements)
 [![Built with Electron](https://img.shields.io/badge/Electron-42-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![Status: early alpha](https://img.shields.io/badge/status-early%20alpha-orange)
@@ -16,8 +16,8 @@ or stop any of them without hunting for the right terminal.
   <img src="assets/screenshot.png" alt="Dev Tray popover showing dev servers grouped by repository with branch names, ports, and open/kill actions" width="360">
 </p>
 
-> **Status:** early alpha (`v0.1.0`), Windows-only. It works day to day, but expect rough edges and
-> breaking changes. Issues and PRs welcome.
+> **Status:** early alpha (`v0.1.0`). Windows is the packaged app; Linux currently has a local
+> Waybar + Quickshell preview. Expect rough edges and breaking changes. Issues and PRs welcome.
 
 ## What it does
 
@@ -98,6 +98,24 @@ tests and a live scan smoke check when the `.node` file is present.
 
 The app launches into the system tray with no taskbar window. Click the tray icon to open the popover.
 
+### Linux shell preview (Waybar + Quickshell)
+
+The Linux preview keeps the desktop UI separate: a small CLI scans `ss` and `/proc`, Waybar shows
+the live count, and Quickshell owns the popover.
+
+```bash
+npm install
+npm run install:linux
+qs -c dev-tray
+```
+
+Add the module from `apps/linux/waybar-module.jsonc` to your Waybar config and append
+`apps/linux/waybar-style.css` to its stylesheet. To start the popover with Hyprland, add
+`exec-once = qs -c dev-tray` to your user autostart config.
+
+Run `npm run scan:linux` to inspect the same JSON payload without the UI. The preview requires
+Linux with `ss`, Node.js 22+, Git (optional), Waybar, and Quickshell 0.3+.
+
 ## Build a Windows installer
 
 ```powershell
@@ -118,10 +136,10 @@ builds.
 
 ## How it works
 
-One resident PowerShell worker (`scan-worker.ps1`) answers a scan per poll. It lists listening ports,
-maps them to PIDs, and reads each process's real working directory from its PEB. Keeping the worker
-warm holds scans around 500 ms. Dev Tray then walks up to the nearest `.git` for the repo name and
-branch, and drops anything that isn't a real dev server.
+Windows uses one resident PowerShell worker (`scan-worker.ps1`) to map listening ports to PIDs and
+read each process's real working directory from its PEB. Linux uses `ss` and `/proc` through the
+standalone `dev-tray-linux` CLI. Both paths resolve the nearest Git repository and discard known
+non-server processes before presenting results.
 
 The full discovery pipeline, project-detection precedence, and limitations live in
 [**docs/ARCHITECTURE.md**](docs/ARCHITECTURE.md). The reasoning behind each product decision lives in
