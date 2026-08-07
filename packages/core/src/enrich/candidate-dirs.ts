@@ -14,7 +14,7 @@ export function dirOf(
     return path.resolve(path.dirname(clean));
   } catch {
     const parent = path.dirname(clean);
-    if (parent && parent !== clean && /^[A-Za-z]:[\\/]/.test(parent)) {
+    if (parent && parent !== clean && (/^[A-Za-z]:[\\/]/.test(parent) || parent.startsWith('/'))) {
       return path.resolve(parent);
     }
     return null;
@@ -23,14 +23,20 @@ export function dirOf(
 
 export function extractPaths(cmd: string | undefined | null): string[] {
   if (!cmd || typeof cmd !== 'string') return [];
+
   const out: string[] = [];
-  const quoted = cmd.match(/"([^"]+)"/g) || [];
-  for (const q of quoted) {
-    const inner = q.slice(1, -1);
-    if (/^[A-Za-z]:[\\/]/.test(inner)) out.push(inner);
+  const tokens = cmd.match(/"[^"]*"|'[^']*'|\S+/g) ?? [];
+  for (const raw of tokens) {
+    let token = raw;
+    if ((token.startsWith('"') && token.endsWith('"'))
+      || (token.startsWith("'") && token.endsWith("'"))) {
+      token = token.slice(1, -1);
+    }
+    const equals = token.indexOf('=');
+    if (equals >= 0) token = token.slice(equals + 1);
+    token = token.replace(/[",;]+$/, '');
+    if (/^[A-Za-z]:[\\/]/.test(token) || token.startsWith('/')) out.push(token);
   }
-  const bare = cmd.match(/[A-Za-z]:[\\/][^\s"]+/g) || [];
-  for (const b of bare) out.push(b);
   return out;
 }
 
