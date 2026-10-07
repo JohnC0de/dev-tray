@@ -12,12 +12,15 @@
   "scripts": {
     "dev": "npm --prefix apps/desktop run dev",
     "build": "npm --prefix apps/desktop run build",
+    "build:linux": "npm --prefix apps/linux run build",
     "dist": "npm --prefix apps/desktop run dist",
     "pack": "npm --prefix apps/desktop run pack",
     "build:native": "npm --prefix packages/scan-native run build",
-    "test": "npm --prefix packages/core run test && npm --prefix apps/desktop run test",
+    "test": "npm --prefix packages/core run test && npm --prefix apps/desktop run test && npm --prefix apps/linux run test",
     "check": "npm test",
+    "install:linux": "npm --prefix apps/linux run install:local",
     "test:native": "npm --prefix packages/scan-native run test",
+    "scan:linux": "npm --prefix apps/linux run dev -- scan",
     "scan:once": "npm --prefix apps/desktop run scan:once",
     "start": "npm run dev",
     "gen:icons": "node scripts/gen-icons.js"

@@ -1,0 +1,11 @@
+#custom-dev-tray {
+  margin: 0 7.5px;
+}
+
+#custom-dev-tray.idle {
+  opacity: 0.6;
+}
+
+#custom-dev-tray.error {
+  color: #ff6b64;
+}
